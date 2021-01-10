@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const { check, validationResult } = require('express-validator');
 
 const User = require('../../models/User');
 
@@ -12,12 +12,10 @@ const User = require('../../models/User');
 // @access  Public
 router.post(
   '/',
-  [
     check('name', 'O campo nome é obrigatório').not().isEmpty(),
     check('email', 'O campo tem que ser um email válido').isEmail(),
     check('password', 'O campo senha é obrigatório').isLength({ min: 6 }),
     check('role', 'O campo role é obrigatório').not().isEmpty(),
-  ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
