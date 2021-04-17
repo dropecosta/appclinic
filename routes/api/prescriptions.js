@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-// @route   GET api/patient-detail
+// @route   GET api/prescriptions
 // @desc    Test route
 // @access  Public
-router.get('/', (req, res) => res.send('Patient Detail route'));
+router.get('/', (req, res) => res.send('Prescriptions route'));
 
 module.exports = router;
