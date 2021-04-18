@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
 const ExamSchema = new mongoose.Schema({
+    registry: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'registry',
+    },
     completed: {
         type: Boolean,
-        required: true,
+        default: false,
     },
     description: {
         type: String,
