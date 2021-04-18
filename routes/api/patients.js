@@ -5,13 +5,19 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 
 const Patient = require('../../models/Patient');
-// const User = require('../../models/User');
-// const Post = require('../../models/Post');
 
-// @route   GET api/patients
-// @desc    Test route
-// @access  Public
-// router.get('/', (req, res) => res.send('Patients route'));
+// @route    GET api/patients
+// @desc     Get all patients
+// @access   Private
+router.get('/', async (req, res) => {
+    try {
+      const patient = await Patient.find().sort({ date: -1 });
+      res.json(patient);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  });
 
 // @route   POST api/patients
 // @desc    Register patient route

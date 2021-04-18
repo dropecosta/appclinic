@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
+const auth = require('../../middleware/auth');
+const checkObjectId = require('../../middleware/checkObjectId');
 
 const User = require('../../models/User');
 
@@ -67,5 +69,91 @@ router.post(
     }
   }
 );
+
+// @route    GET api/users
+// @desc     Get all users
+// @access   Private
+router.get('/', auth, async (req, res) => {
+  try {
+    const user = await User.find().sort({ date: -1 });
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route    GET api/users/:id
+// @desc     Get users by ID
+// @access   Private
+router.get('/:id', auth, checkObjectId('id'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuário não encontrado' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route    PUT api/users/:id
+// @desc     Update user
+// @access   Private
+router.put('/:id', auth, checkObjectId('id'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuário não encontrado' });
+    }
+
+    user.name = req.body.name,
+    user.email =  req.body.email,
+    user.role = req.body.role,
+    user.createdAt =  new Date()
+
+    await user.save(user);
+
+    res.status(200).json({
+      message: 'Cliente encontrado e atualizado com sucesso!',
+      success: true,
+      user: user,
+    });
+
+
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route    DELETE api/users/:id
+// @desc     Delete user
+// @access   Private
+router.delete('/:id', auth, checkObjectId('id'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuário não encontrado' });
+    };
+
+    await user.remove();
+
+    res.json({ msg: 'Usuário removido' });
+  } catch (err) {
+    console.error(err.message);
+
+    res.status(500).send('Server Error');
+  }
+});
+
 
 module.exports = router;
