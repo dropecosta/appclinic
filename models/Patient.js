@@ -13,7 +13,7 @@ const PatientSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    healthCare: {
+    healthcare: {
         type: String,
         required: true,
     },
