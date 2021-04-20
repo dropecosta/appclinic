@@ -11,11 +11,9 @@ const RegistrySchema = new mongoose.Schema({
     {
       genericName: {
         type: String,
-        required: true,
       },
       commercialName: {
         type: String,
-        required: true,
       },
       producer: {
         type: String,
@@ -34,6 +32,9 @@ const RegistrySchema = new mongoose.Schema({
       completed: {
         type: Boolean,
         default: false,
+      },
+      category: {
+        type: [String]
       },
       description: {
         type: String,
