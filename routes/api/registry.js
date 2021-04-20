@@ -16,7 +16,7 @@ router.post(
     const {
       patient,
       prescription,
-      // exam,
+      exam,
       ...rest
     } = req.body;
 
@@ -24,9 +24,9 @@ router.post(
     const registryFields = {
       patient: await Patient.findById(req.params.id),
       // prescription: Array.isArray(prescription) ? prescription : prescription.split(',').map((p) => ' ' + p.trim()),
-      prescription: Array.isArray(prescription) ? prescription : '',
+      prescription: Array.isArray(prescription) ? prescription : null,
       // exam: Array.isArray(exam) ? exam : exam.split(',').map((e) => ' ' + e.trim()),
-      // exam: Array.isArray(exam) ? exam : '',
+      exam: Array.isArray(exam) ? exam : null,
       ...rest
     };
 
@@ -83,15 +83,14 @@ router.get('/patient/:patient_id',
   }
 });
 
-// @route    DELETE api/registry
+// @route    DELETE api/prescription/:id
 // @desc     Delete prescription by prescription ID
 // @access   Private
 router.delete('/prescription/:id', auth, async (req, res) => {
   try {
-    // Remove profile
-    // Remove user
+    // Remove prescription
     const foundRegistry = await Registry.findOne(req.patient);
-    
+
     foundRegistry.prescription = foundRegistry.prescription.filter(
       (p) => p._id.toString() !== req.params.id
     );
@@ -104,51 +103,30 @@ router.delete('/prescription/:id', auth, async (req, res) => {
   }
 });
 
-/// @route    PUT api/registry/prescription
-// @desc     Add profile prescription
+// @route    PUT api/prescription/:id
+// @desc     Update prescription by prescription ID
 // @access   Private
-router.put(
-  '/prescription/:id',
+// router.put(
+//   '/prescription/:id',
+//   auth,
+//   async (req, res) => {
+//     try {
+//       const foundRegistry = await Registry.findOne(req.patient);
+//       console.log('foundRegistry', foundRegistry);
 
-  // check('title', 'Title is required').notEmpty(),
-  // check('company', 'Company is required').notEmpty(),
+//       foundRegistry.prescription = foundRegistry.prescription.filter(
+//       (p) => p._id.toString() !== req.params.id);
 
-  async (req, res) => {
-    // destructure the request
-    const {
-      genericName,
-      commercialName,
-      producer,
-      description,
-      ...rest
-    } = req.body;
+//       foundRegistry.prescription.unshift(req.body);
+//       console.log('req.boody', req.body)
 
-    try {
-
-      // id registry
-      const registry = await Registry.findById(req.params.id);
-
-      await console.log('registry', registry);
-
-
-      registry.prescription.genericName = req.body.genericName,
-      registry.prescription.commercialName = req.body.commercialName,
-      registry.prescription.producer = req.body.producer
-      registry.prescription.description = req.body.description
-      
-      registry.prescription.unshift(req.body) || '';
-      
-      console.log('req.body', req.body);
-
-
-      await registry.save();
-
-      res.json(registry);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
-  }
-);
+//       await foundRegistry.save();
+//       return res.status(200).json(foundRegistry);  
+//     } catch (err) {
+//       console.error(err.message);
+//       res.status(500).send('Server Error');
+//     }
+//   }
+// );
 
 module.exports = router;
