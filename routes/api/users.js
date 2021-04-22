@@ -17,7 +17,6 @@ router.post(
     check('name', 'O campo nome é obrigatório').not().isEmpty(),
     check('email', 'O campo tem que ser um email válido').isEmail(),
     check('password', 'O campo senha é obrigatório').isLength({ min: 6 }),
-    check('role', 'O campo role é obrigatório').not().isEmpty(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -39,8 +38,7 @@ router.post(
       user = new User({
         name,
         email,
-        password,
-        role
+        password
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -115,7 +113,6 @@ router.put('/:id', auth, checkObjectId('id'), async (req, res) => {
 
     user.name = req.body.name,
     user.email =  req.body.email,
-    user.role = req.body.role,
     user.createdAt =  new Date()
 
     await user.save(user);
